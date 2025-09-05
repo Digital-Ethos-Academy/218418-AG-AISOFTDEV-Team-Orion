@@ -25,15 +25,15 @@ smolagents
 #langchain-core
 #langchain-community
 #langchain-openai
-langgraph
+#langgraph
 a2a-protocol
 mcp
-langchain-mcp
+#langchain-mcp
 
 # RAG / Vector stores / Document loaders
-faiss-cpu
-pypdf
-sentence-transformers
+#faiss-cpu
+#pypdf
+#sentence-transformers
 
 # Model infra & huggingface
 transformers

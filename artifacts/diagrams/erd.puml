@@ -1,0 +1,83 @@
+@startuml
+title Onboarding DB - Entity Relationship Diagram
+hide circle
+entity "Users" as users {
+  * user_id : INTEGER
+  username : TEXT
+  email : TEXT
+  password : TEXT
+  created_at : DATETIME
+}
+
+entity "Movies" as movies {
+  * movie_id : INTEGER
+  title : TEXT
+  release_date : DATE
+  synopsis : TEXT
+  duration : INTEGER
+  metadata : BLOB
+}
+
+entity "TV_Shows" as tvshows {
+  * show_id : INTEGER
+  title : TEXT
+  release_date : DATE
+  seasons : INTEGER
+  episodes : INTEGER
+  metadata : BLOB
+}
+
+entity "User_Watchlist" as watchlist {
+  * watchlist_id : INTEGER
+  user_id : INTEGER
+  movie_id : INTEGER
+  show_id : INTEGER
+  status : TEXT
+  watched_date : DATE
+}
+
+entity "Ratings" as ratings {
+  * rating_id : INTEGER
+  user_id : INTEGER
+  movie_id : INTEGER
+  show_id : INTEGER
+  rating : INTEGER
+  review : TEXT
+  created_at : DATETIME
+}
+
+entity "Viewing_History" as history {
+  * history_id : INTEGER
+  user_id : INTEGER
+  movie_id : INTEGER
+  show_id : INTEGER
+  watched_date : DATE
+}
+
+entity "Friends" as friends {
+  * (user_id, friend_id) : PK
+}
+
+entity "Notifications" as notifications {
+  * notification_id : INTEGER
+  user_id : INTEGER
+  message : TEXT
+  created_at : DATETIME
+}
+
+users ||--o{ watchlist : has
+movies ||--o{ watchlist : listed_in
+tvshows ||--o{ watchlist : listed_in
+
+users ||--o{ ratings : gives
+movies ||--o{ ratings : receives
+tvshows ||--o{ ratings : receives
+
+users ||--o{ history : watched
+movies ||--o{ history : watched
+tvshows ||--o{ history : watched
+
+users ||--o{ friends : connects
+users ||--o{ notifications : receives
+
+@enduml
