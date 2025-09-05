@@ -1,4 +1,4 @@
-export default function MyCinemaDashboard() {
+function MyCinemaDashboard() {
   const [watchlist, setWatchlist] = React.useState([
     { id: 1, title: "Inception", genre: "Sci-Fi", rating: 4.5, watched: false },
     { id: 2, title: "Interstellar", genre: "Adventure", rating: 4.7, watched: false }
@@ -92,3 +92,6 @@ export default function MyCinemaDashboard() {
     </div>
   );
 }
+
+// expose globally for simple script include in index.html
+window.MyCinemaDashboard = MyCinemaDashboard;
