@@ -1,0 +1,36 @@
+@startuml
+title Onboarding Tool - Typical Request Sequence
+
+actor User
+participant "Browser / Client" as Client
+participant "FastAPI App" as API
+participant "SQLAlchemy / DB Session" as DB
+participant "LLM Utils (utils.py)" as LLM
+database "artifacts/onboarding.db" as SQDB
+
+User -> Client: Open UI / send request
+Client -> API: POST /users {username,email,password}
+API -> DB: get_db() (session)
+API -> DB: INSERT user
+DB -> SQDB: write row
+DB --> API: commit/return user
+API --> Client: 201 Created (UserRead)
+
+Client -> API: GET /movies
+API -> DB: SELECT * FROM Movies
+DB -> SQDB: query
+SQDB --> DB: rows
+DB --> API: rows
+API --> Client: 200 OK (list of MovieRead)
+
+Client -> API: POST /movies {title,release_date}
+API -> LLM: (optional) call get_completion to enrich metadata
+LLM --> API: enriched metadata
+API -> DB: INSERT movie
+DB -> SQDB: write row
+DB --> API: commit/return movie
+API --> Client: 201 Created
+
+note over API,LLM: LLM calls are optional and controlled by lab notebooks
+
+@enduml

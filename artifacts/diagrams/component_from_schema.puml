@@ -1,0 +1,38 @@
+@startuml
+title Onboarding System - Component Diagram (from SQL schema)
+
+package "Clients" {
+  [Web UI]
+  [CLI / Tests]
+}
+
+package "Backend" {
+  component "FastAPI App\n(artifacts/app/main.py)" as Api
+  component "SQLAlchemy Models\n(ORM mapping to tables)" as ORM
+  component "LLM / Helpers\n(artifacts/validation_models/prd_model.py, utils.py)" as LLM
+  component "Schema & Seed\n(artifacts/schema.sql, seed_data.sql)" as Scripts
+}
+
+database "SQLite DB\n(artifacts/my_cinema.db / onboarding.db)" as DB
+
+"Web UI" --> Api : HTTP/JSON
+"CLI / Tests" --> Api : HTTP / import
+Api --> ORM : CRUD calls (Users, Movies, TV_Shows, ...)
+ORM --> DB : SQL (Tables created by schema.sql)
+Scripts --> DB : CREATE TABLE / INSERT (seed_data.sql)
+Api --> Scripts : optional init / migrate
+Api --> LLM : call for PRD/validation / prompts
+
+note right of DB
+  Tables derived from schema.sql:
+  - Users
+  - Movies
+  - TV_Shows
+  - User_Watchlist
+  - Ratings
+  - Viewing_History
+  - Friends
+  - Notifications
+end note
+
+@enduml
