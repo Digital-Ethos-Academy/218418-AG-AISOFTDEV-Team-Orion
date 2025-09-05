@@ -2,6 +2,26 @@
 ![App UI preview](./actual_ui.png)
 
 Lightweight movie & TV tracking platform: a FastAPI backend (SQLite demo) with endpoints for users, watchlists, ratings & reviews, viewing history, friends, notifications, and basic analytics; includes an in-memory demo and a React UI prototype for quick testing and exploration.
+
+## Run frontend
+
+Quick preview (serve static files):
+
+```powershell
+npx serve .
+```
+
+## Run backend
+
+Start the FastAPI backend (SQLite demo):
+
+```powershell
+python main.py
+# or run with uvicorn directly:
+.\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+```
+
+
 ## What this repo contains
 - `main.py` — FastAPI app backed by SQLAlchemy and a local SQLite DB (`artifacts/onboarding.db`).
 - `artifacts/app/main_in_memory.py` — Minimal in-memory FastAPI example (no DB).
