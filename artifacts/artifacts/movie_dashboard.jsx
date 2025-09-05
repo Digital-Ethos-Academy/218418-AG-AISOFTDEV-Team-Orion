@@ -1,277 +1,223 @@
-export default function MyCinemaDashboard() {
-  const { useState, useEffect, useMemo } = React;
-  const initialWatchlist = [
-    { id: 1, title: "Inception", year: 2010, duration: "149 min", genres: ["Sci‑Fi", "Thriller"], rating: 4.5, progress: 40, watched: false, poster: "https://via.placeholder.com/320x480/1f2937/ffffff?text=Inception" },
-    { id: 2, title: "Stranger Things", year: 2016, duration: "3 seasons", genres: ["TV", "Mystery"], rating: 4.3, progress: 20, watched: false, poster: "https://via.placeholder.com/320x480/111827/ffffff?text=Stranger+Things" },
-    { id: 3, title: "The Batman", year: 2022, duration: "176 min", genres: ["Action", "Crime"], rating: 4.2, progress: 70, watched: false, poster: "https://via.placeholder.com/320x480/0f172a/ffffff?text=The+Batman" }
+export default function MyCinemaDashboard(){
+  const [query,setQuery]=React.useState("");
+  const initialWatchlist=[
+    {id:1,title:"Inception",year:2010,runtime:149,rating:4.5,genres:["Sci‑Fi","Thriller"],progress:60,poster:"https://via.placeholder.com/300x450?text=Inception"},
+    {id:2,title:"Stranger Things",year:2016,rating:4.2,genres:["Sci‑Fi","Drama"],progress:20,poster:"https://via.placeholder.com/300x450?text=Stranger+Things"},
+    {id:3,title:"The Batman",year:2022,runtime:176,rating:4.1,genres:["Action","Crime"],progress:0,poster:"https://via.placeholder.com/300x450?text=The+Batman"}
   ];
-  const initialRecommendations = [
-    { id: 101, title: "Dune", genres: ["Sci‑Fi", "Adventure"], rating: 4.4, poster: "https://via.placeholder.com/320x480/111827/ffffff?text=Dune" },
-    { id: 102, title: "The Crown", genres: ["TV", "Drama"], rating: 4.0, poster: "https://via.placeholder.com/320x480/1f2937/ffffff?text=The+Crown" },
-    { id: 103, title: "Blade Runner 2049", genres: ["Sci‑Fi", "Neo‑noir"], rating: 4.1, poster: "https://via.placeholder.com/320x480/0f172a/ffffff?text=BR+2049" },
-    { id: 104, title: "Oppenheimer", genres: ["Drama", "History"], rating: 4.6, poster: "https://via.placeholder.com/320x480/0b132b/ffffff?text=Oppenheimer" },
-    { id: 105, title: "Arcane", genres: ["TV", "Animation"], rating: 4.7, poster: "https://via.placeholder.com/320x480/111827/ffffff?text=Arcane" },
-    { id: 106, title: "John Wick", genres: ["Action", "Crime"], rating: 4.0, poster: "https://via.placeholder.com/320x480/0f172a/ffffff?text=John+Wick" }
+  const initialRecs=[
+    {id:4,title:"Interstellar",rating:4.7,genres:["Sci‑Fi","Adventure"],poster:"https://via.placeholder.com/300x450?text=Interstellar"},
+    {id:5,title:"Dune",rating:4.3,genres:["Sci‑Fi","Drama"],poster:"https://via.placeholder.com/300x450?text=Dune"},
+    {id:6,title:"The Matrix",rating:4.8,genres:["Sci‑Fi","Action"],poster:"https://example.com/missing.jpg"}
   ];
-  const activities = [
-    { id: "a1", user: "EV", action: "reviewed", title: "Inception", rating: 5, text: "Mind-bending visuals." },
-    { id: "a2", user: "MK", action: "watched", title: "The Batman", rating: 4, text: "Moody and gripping." },
-    { id: "a3", user: "JS", action: "added", title: "Dune", rating: null, text: "Queued for weekend." }
-  ];
-  const [watchlist, setWatchlist] = useState(initialWatchlist);
-  const [recs, setRecs] = useState(initialRecommendations);
-  const [query, setQuery] = useState("");
-  const [announce, setAnnounce] = useState("");
-
-  useEffect(() => {
-    if (!announce) return;
-    const t = setTimeout(() => setAnnounce(""), 1500);
-    return () => clearTimeout(t);
-  }, [announce]);
-
-  const filteredWatchlist = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return watchlist;
-    return watchlist.filter(w => w.title.toLowerCase().includes(q) || w.genres.join(" ").toLowerCase().includes(q));
-  }, [query, watchlist]);
-
-  const handleMarkWatched = (id) => {
-    setWatchlist(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, watched: !item.watched, progress: 100 } : item
-      )
-    );
-    const movie = watchlist.find(m => m.id === id);
-    setAnnounce(`${movie ? movie.title : "Item"} marked as watched`);
-  };
-
-  const handleAddToWatchlist = (rec) => {
-    if (watchlist.some(w => w.title === rec.title)) return;
-    setWatchlist(prev => [...prev, { id: Date.now(), title: rec.title, year: "", duration: "", genres: rec.genres, rating: rec.rating, progress: 0, watched: false, poster: rec.poster }]);
-    setAnnounce(`${rec.title} added to Watchlist`);
-  };
-
-  const isAdded = (rec) => watchlist.some(w => w.title === rec.title);
-
-  const Star = ({ filled }) => (
-    <svg aria-hidden="true" className={`h-4 w-4 ${filled ? "text-amber-400" : "text-slate-600"}`} viewBox="0 0 20 20" fill="currentColor">
-      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.802 2.035a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.802-2.035a1 1 0 00-1.175 0l-2.802 2.035c-.784.57-1.839-.197-1.54-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.88 8.72c-.783-.57-.38-1.81.588-1.81H6.93a1 1 0 00.95-.69l1.17-3.292z" />
-    </svg>
+  const [watchlist,setWatchlist]=React.useState(initialWatchlist);
+  const [watched,setWatched]=React.useState([]);
+  const [recs,setRecs]=React.useState(initialRecs);
+  const [activity,setActivity]=React.useState([{id:"a1",text:"Welcome to MyCinema! Start building your watchlist.",time:"just now"}]);
+  const [imgErrors,setImgErrors]=React.useState(new Set());
+  const avatarInitials="JD";
+  const genreIcon=(g)=>(
+    g==="Sci‑Fi"?<svg className="w-3.5 h-3.5 text-teal-300" viewBox="0 0 24 24" fill="currentColor"><path d="M3 11h6l3-8 3 8h6l-4.9 3.6 1.9 6L12 17l-6 3.6 1.9-6z"/></svg>:
+    g==="Action"?<svg className="w-3.5 h-3.5 text-indigo-300" viewBox="0 0 24 24" fill="currentColor"><path d="M2 12l10-9 10 9-10 9L2 12zm10-5l-6.5 5L12 17l6.5-5L12 7z"/></svg>:
+    g==="Drama"?<svg className="w-3.5 h-3.5 text-rose-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C7 3 3 7 3 12s4 9 9 9 9-4 9-9-4-9-9-9zm-2 7h-2v2h2v-2zm8 0h-6v2h6v-2zm-8 4h6v2H10v-2z"/></svg>:
+    g==="Thriller"?<svg className="w-3.5 h-3.5 text-amber-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7-6.5-4.5L5.5 20l2-7L2 9h7z"/></svg>:
+    g==="Adventure"?<svg className="w-3.5 h-3.5 text-emerald-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l9 20-9-5-9 5 9-20z"/></svg>:
+    g==="Crime"?<svg className="w-3.5 h-3.5 text-yellow-300" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v6H4V4zm0 10h16v6H4v-6zm3-8v2h2V6H7zm0 10v2h2v-2H7z"/></svg>:null
   );
-
-  const Rating = ({ value }) => {
-    const stars = [1, 2, 3, 4, 5].map(i => i <= Math.round(value) ? true : false);
-    return (
-      <div className="flex items-center gap-1" aria-label={`Rating ${value} out of 5`}>
-        {stars.map((s, i) => <Star key={i} filled={s} />)}
-        <span className="ml-1 text-xs text-slate-400">{value.toFixed(1)}</span>
-      </div>
-    );
+  const StarRating=({value=0})=>{
+    const stars=[1,2,3,4,5];
+    return <div className="flex items-center gap-0.5" aria-label={`Rating ${value} out of 5`}>
+      {stars.map(s=><svg key={s} className={`w-4 h-4 ${s<=Math.round(value)?'text-yellow-400':'text-slate-500'}`} viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.803 2.036a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118L10 13.347l-2.984 2.136c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L3.38 8.72c-.783-.57-.38-1.81.588-1.81H7.43a1 1 0 00.95-.69l1.07-3.292z"/></svg>)}
+    </div>;
   };
-
-  const TagIcon = ({ name }) => {
-    const base = "h-3.5 w-3.5";
-    if (name.toLowerCase().includes("sci")) {
-      return (<svg className={base} viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 6.5L21 11l-6.5 2.5L12 20l-2.5-6.5L3 11l6.5-2.5L12 2z"/></svg>);
-    }
-    if (name.toLowerCase().includes("tv")) {
-      return (<svg className={base} viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16a2 2 0 012 2v7a2 2 0 01-2 2h-5l2 3h-2l-2-3-2 3H9l2-3H4a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>);
-    }
-    if (name.toLowerCase().includes("action")) {
-      return (<svg className={base} viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>);
-    }
-    if (name.toLowerCase().includes("drama") || name.toLowerCase().includes("history")) {
-      return (<svg className={base} viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v12a4 4 0 11-8 0 4 4 0 11-8 0V4z"/></svg>);
-    }
-    if (name.toLowerCase().includes("mystery") || name.toLowerCase().includes("crime")) {
-      return (<svg className={base} viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 00-7 7h2a5 5 0 119.6 1.9c-.8 1.6-2.6 2.3-2.6 4.1v1h2v-1c0-1 .8-1.6 1.5-2.2A7 7 0 0012 2zm-1 16h2v2h-2v-2z"/></svg>);
-    }
-    return (<svg className={base} viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="9"/></svg>);
+  const addToWatchlist=(item)=>{
+    setWatchlist(prev=>{
+      if(prev.find(m=>m.id===item.id)) return prev;
+      return [...prev,{...item,progress:0,year:2024,runtime:120}];
+    });
+    setRecs(prev=>prev.map(r=>r.id===item.id?{...r,added:true}:r));
+    setActivity(a=>[{id:crypto.randomUUID(),text:`Added "${item.title}" to your watchlist.`,time:"now"},...a]);
   };
-
-  const GenreTag = ({ g }) => (
-    <span className="inline-flex items-center gap-1 rounded-md bg-slate-800/80 text-teal-300 ring-1 ring-teal-500/20 px-2 py-0.5 text-[10px] font-medium">
-      <TagIcon name={g} />
-      {g}
-    </span>
-  );
-
+  const markWatched=(id)=>{
+    setWatchlist(prev=>{
+      const item=prev.find(m=>m.id===id);
+      if(!item) return prev;
+      setWatched(w=>[{...item,progress:100,watchedAt:new Date().toLocaleDateString()},...w]);
+      setActivity(a=>[{id:crypto.randomUUID(),text:`Marked "${item.title}" as watched.`,time:"now"},...a]);
+      return prev.filter(m=>m.id!==id);
+    });
+  };
+  const filteredWatchlist=watchlist.filter(m=>m.title.toLowerCase().includes(query.toLowerCase()));
+  const filteredRecs=recs.filter(m=>m.title.toLowerCase().includes(query.toLowerCase()));
+  const onImgError=(id,e)=>{
+    const p=new Set(Array.from(imgErrors));
+    p.add(id);
+    setImgErrors(p);
+    e.currentTarget.src="https://via.placeholder.com/300x450?text=No+Image";
+  };
+  const stats=React.useMemo(()=>{
+    const all=[...watchlist,...watched];
+    const byGenre={};
+    all.forEach(m=>m.genres?.forEach(g=>byGenre[g]=(byGenre[g]||0)+1));
+    const entries=Object.entries(byGenre).slice(0,4);
+    return entries.length?entries:[["Sci‑Fi",2],["Action",1],["Drama",1]];
+  },[watchlist,watched]);
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-slate-100">
-      <header className="sticky top-0 z-30 border-b border-slate-800/70 bg-slate-900/80 backdrop-blur">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
-          <div className="grid grid-cols-3 items-center gap-4 py-4">
-            <h1 className="font-semibold tracking-tight text-slate-100"><span className="rounded bg-gradient-to-r from-indigo-500 to-teal-400 bg-clip-text text-transparent">MyCinema</span></h1>
-            <div className="flex justify-center">
-              <label htmlFor="search" className="sr-only">Search</label>
-              <div className="relative w-full max-w-md">
-                <svg className="pointer-events-none absolute left-3 top-2.5 h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="currentColor"><path d="M10 2a8 8 0 105.292 14.292l4.207 4.207 1.414-1.414-4.207-4.207A8 8 0 0010 2zm0 2a6 6 0 110 12A6 6 0 0110 4z"/></svg>
-                <input id="search" value={query} onChange={(e)=>setQuery(e.target.value)} placeholder="Search titles, genres..." aria-label="Search movies and shows" className="w-full rounded-lg bg-slate-800/80 pl-10 pr-3 py-2 text-sm placeholder-slate-400 text-slate-100 shadow-inner focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500" />
-              </div>
-            </div>
-            <div className="flex items-center justify-end">
-              <button aria-label="Open notifications" className="mr-3 rounded-full p-2 text-slate-300 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
-                <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22a2 2 0 001.995-1.85L14 20h-4a2 2 0 001.85 1.995L12 22zm6-6V11a6 6 0 10-12 0v5l-2 2v1h16v-1l-2-2z"/></svg>
-              </button>
-              <div className="flex items-center gap-2">
-                <div aria-hidden="true" className="h-8 w-8 rounded-full bg-gradient-to-br from-indigo-600 to-teal-400 text-slate-900 flex items-center justify-center text-sm font-bold">MC</div>
-              </div>
-            </div>
+    <div className="min-h-screen bg-slate-900 text-slate-100">
+      <header className="sticky top-0 z-10 backdrop-blur bg-slate-900/70 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
+          <div className="font-semibold text-lg tracking-tight text-slate-100">MyCinema</div>
+          <div className="flex-1 flex justify-center">
+            <label className="relative w-full max-w-xl">
+              <span className="sr-only">Search</span>
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M12.9 14.32a8 8 0 111.414-1.414l4.387 4.387-1.414 1.414-4.387-4.387zM14 8a6 6 0 11-12 0 6 6 0 0112 0z" clipRule="evenodd"/></svg>
+              <input aria-label="Search movies and shows" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search..." className="w-full pl-10 pr-4 py-2 rounded-full bg-slate-800/80 text-slate-100 placeholder-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 border border-slate-700"/>
+            </label>
+          </div>
+          <div className="flex items-center gap-3">
+            <button aria-label="Notifications" className="p-2 rounded-lg hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+              <svg className="w-5 h-5 text-slate-300" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a5 5 0 00-5 5v3.09c0 .52-.2 1.02-.57 1.39L4 13v1h16v-1l-2.43-1.52a2 2 0 01-.57-1.39V7a5 5 0 00-5-5zm0 20a3 3 0 003-3H9a3 3 0 003 3z"/></svg>
+            </button>
+            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-sm font-semibold">{avatarInitials}</div>
           </div>
         </div>
       </header>
-
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          <nav aria-label="Primary" className="lg:col-span-2">
-            <div className="sticky top-[72px] space-y-2 rounded-xl bg-slate-900/70 p-3 shadow-lg shadow-black/30 ring-1 ring-slate-800">
+      <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <nav className="lg:col-span-2">
+          <div className="bg-slate-800/80 rounded-xl shadow-lg shadow-black/30 p-3">
+            <ul className="space-y-1">
               {[
-                { name: "Home", icon: (<svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l10 9h-3v9h-6v-6H11v6H5v-9H2l10-9z"/></svg>) },
-                { name: "Watchlist", icon: (<svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3h14a2 2 0 012 2v16l-9-4-9 4V5a2 2 0 012-2z"/></svg>) },
-                { name: "History", icon: (<svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8v5h4v2h-6V8h2zm0-6a10 10 0 11-7.07 2.93L2 7V2h5L4.84 4.16A8 8 0 1012 4z"/></svg>) },
-                { name: "Recommendations", icon: (<svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z"/></svg>) },
-                { name: "Profile", icon: (<svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5.33 0-8 2.667-8 6v2h16v-2c0-3.333-2.667-6-8-6z"/></svg>) }
-              ].map((item, idx) => (
-                <a key={idx} href="#" className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 ${item.name === "Watchlist" ? "bg-slate-800/70 text-teal-300 ring-1 ring-teal-500/20" : "text-slate-300"}`}>
-                  <span className="text-slate-300">{item.icon}</span>
-                  <span>{item.name}</span>
-                </a>
+                {label:"Home",icon:(<svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8-1.5 1.5L18 11.1V21H6v-9.9l-1.5 1.4L3 11l9-8z"/></svg>)},
+                {label:"Watchlist",icon:(<svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h12a2 2 0 012 2v16l-8-4-8 4V4a2 2 0 012-2z"/></svg>)},
+                {label:"History",icon:(<svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8v5l4 2-.7 1.9L10 13V8h2zm0-6a10 10 0 100 20 10 10 0 000-20z"/></svg>)},
+                {label:"Recommendations",icon:(<svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M2 12l10-9 10 9-4 0v8H6v-8H2z"/></svg>)},
+                {label:"Profile",icon:(<svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm-7 9a7 7 0 0114 0H5z"/></svg>)}
+              ].map((item,i)=>(
+                <li key={i}>
+                  <button aria-label={item.label} className="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-700/60 text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">
+                    <span className="text-slate-300">{item.icon}</span>
+                    <span className="text-sm">{item.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </nav>
+        <main className="lg:col-span-7 space-y-6">
+          <section aria-labelledby="watchlist-heading" className="bg-slate-800/80 rounded-xl shadow-lg shadow-black/30 p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 id="watchlist-heading" className="text-xl font-semibold">Watchlist</h2>
+              <span className="text-xs text-slate-400">{filteredWatchlist.length} items</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              {filteredWatchlist.map(item=>(
+                <article key={item.id} className="rounded-xl bg-slate-900/40 border border-slate-700/50 overflow-hidden">
+                  <div className="relative">
+                    <img src={item.poster} alt={`Poster of ${item.title}`} onError={(e)=>onImgError(item.id,e)} className="w-full h-48 object-cover"/>
+                    <div className="absolute top-2 left-2 flex gap-2">
+                      {item.genres.map(g=>(
+                        <span key={g} className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-600/20 text-teal-300 text-xs border border-teal-500/30">
+                          {genreIcon(g)}<span>{g}</span>
+                        </span>
+                      ))}
+                    </div>
+                    <span className={`absolute bottom-2 left-2 text-xs px-2 py-0.5 rounded-full ${item.progress===100?'bg-emerald-600/30 text-emerald-200 border border-emerald-500/30':'bg-indigo-600/30 text-indigo-200 border border-indigo-500/30'}`}>{item.progress===100?"Watched":`Progress ${item.progress}%`}</span>
+                  </div>
+                  <div className="p-3 space-y-2">
+                    <h3 className="font-medium leading-tight">{item.title}</h3>
+                    <div className="flex items-center justify-between">
+                      <StarRating value={item.rating}/>
+                      <span className="text-xs text-slate-400">{item.year || "—"}</span>
+                    </div>
+                    {imgErrors.has(item.id)?<p className="text-xs text-rose-300">Image not available</p>:null}
+                    <div className="flex items-center justify-between mt-2">
+                      <button onClick={()=>markWatched(item.id)} aria-label={`Mark ${item.title} as watched`} className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500">Mark watched</button>
+                      <span className="text-xs text-slate-400">{item.runtime?`${item.runtime} min`:""}</span>
+                    </div>
+                  </div>
+                </article>
               ))}
             </div>
-          </nav>
-
-          <main className="space-y-6 lg:col-span-7">
-            <section aria-labelledby="watchlist-heading" className="rounded-2xl bg-slate-900/70 p-5 shadow-xl shadow-black/30 ring-1 ring-slate-800">
-              <h2 id="watchlist-heading" className="mb-4 text-lg font-semibold text-slate-100">Watchlist</h2>
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {filteredWatchlist.map(item => (
-                  <article key={item.id} className="group overflow-hidden rounded-xl bg-slate-800/70 ring-1 ring-slate-700 shadow-md">
-                    <div className="relative">
-                      <img src={item.poster} alt={`${item.title} poster`} className="h-48 w-full object-cover" />
-                      <div className="absolute left-2 top-2 flex flex-wrap gap-1">
-                        {item.genres.slice(0,3).map((g, i) => <GenreTag key={i} g={g} />)}
-                      </div>
-                      <div className={`absolute right-2 top-2 rounded-md px-2 py-1 text-[10px] font-semibold ${item.watched ? "bg-indigo-500/90 text-white" : "bg-teal-500/90 text-slate-900"}`}>
-                        {item.watched ? "Watched" : `Progress ${item.progress}%`}
-                      </div>
+          </section>
+          <section aria-labelledby="discover-heading" className="bg-slate-800/80 rounded-xl shadow-lg shadow-black/30 p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 id="discover-heading" className="text-xl font-semibold">Discover</h2>
+              <span className="text-xs text-slate-400">{filteredRecs.length} recommendations</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {filteredRecs.map(item=>(
+                <article key={item.id} className="rounded-xl bg-slate-900/40 border border-slate-700/50 overflow-hidden">
+                  <div className="relative">
+                    <img src={item.poster} alt={`Poster of ${item.title}`} onError={(e)=>onImgError(item.id,e)} className="w-full h-40 object-cover"/>
+                    <div className="absolute top-2 left-2 flex gap-2">
+                      {item.genres.map(g=>(
+                        <span key={g} className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-600/20 text-teal-300 text-[10px] border border-teal-500/30">
+                          {genreIcon(g)}<span>{g}</span>
+                        </span>
+                      ))}
                     </div>
-                    <div className="space-y-2 p-4">
-                      <h3 className="font-semibold text-slate-100">{item.title}</h3>
-                      <div className="flex items-center justify-between text-xs text-slate-400">
-                        <span>{item.year}</span>
-                        <span>{item.duration}</span>
-                      </div>
-                      <Rating value={item.rating} />
-                      <div className="pt-2">
-                        <button
-                          aria-pressed={item.watched}
-                          aria-label={`Mark ${item.title} as watched`}
-                          onClick={() => handleMarkWatched(item.id)}
-                          className={`w-full rounded-lg px-3 py-2 text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-400 ${item.watched ? "bg-slate-700 text-slate-300 hover:bg-slate-600" : "bg-gradient-to-r from-teal-400 to-indigo-500 text-slate-900 hover:from-teal-300 hover:to-indigo-400"}`}
-                        >
-                          {item.watched ? "Undo watched" : "Mark watched"}
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-                {filteredWatchlist.length === 0 && (
-                  <p className="col-span-full rounded-lg border border-dashed border-slate-700 p-6 text-center text-sm text-slate-400">No results in your watchlist for “{query}”.</p>
-                )}
+                  </div>
+                  <div className="p-3 space-y-2">
+                    <h3 className="font-medium text-sm">{item.title}</h3>
+                    <StarRating value={item.rating}/>
+                    {imgErrors.has(item.id)?<p className="text-[11px] text-rose-300">Image not available</p>:null}
+                    <button disabled={item.added || watchlist.some(w=>w.id===item.id)} onClick={()=>addToWatchlist(item)} aria-label={`Add ${item.title} to watchlist`} className={`w-full mt-1 px-3 py-1.5 rounded-lg text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${item.added || watchlist.some(w=>w.id===item.id) ? 'bg-slate-700 text-slate-300 cursor-not-allowed':'bg-teal-600 hover:bg-teal-500 text-white'}`}>{item.added || watchlist.some(w=>w.id===item.id) ? 'Added' : 'Add to Watchlist'}</button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        </main>
+        <aside className="lg:col-span-3 space-y-6">
+          <section className="bg-slate-800/80 rounded-xl shadow-lg shadow-black/30 p-4">
+            <h2 className="text-xl font-semibold mb-3">Profile & Activity</h2>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center font-semibold">{avatarInitials}</div>
+              <div>
+                <p className="font-medium">Jordan Doe</p>
+                <p className="text-xs text-slate-400">Member since 2021</p>
               </div>
-            </section>
-
-            <section aria-labelledby="discover-heading" className="rounded-2xl bg-slate-900/70 p-5 shadow-xl shadow-black/30 ring-1 ring-slate-800">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 id="discover-heading" className="text-lg font-semibold text-slate-100">Discover</h2>
-                <span className="text-xs text-slate-400">Tailored for you</span>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {recs.map(rec => (
-                  <article key={rec.id} className="overflow-hidden rounded-xl bg-slate-800/70 ring-1 ring-slate-700">
-                    <div className="relative">
-                      <img src={rec.poster} alt={`${rec.title} poster`} className="h-44 w-full object-cover" />
-                      <div className="absolute left-2 top-2 flex flex-wrap gap-1">
-                        {rec.genres.slice(0,3).map((g, i) => <GenreTag key={i} g={g} />)}
-                      </div>
-                    </div>
-                    <div className="space-y-2 p-4">
-                      <div className="flex items-start justify-between gap-2">
-                        <h3 className="font-semibold text-slate-100">{rec.title}</h3>
-                        <Rating value={rec.rating} />
-                      </div>
-                      <button
-                        aria-label={`Add ${rec.title} to Watchlist`}
-                        onClick={() => handleAddToWatchlist(rec)}
-                        disabled={isAdded(rec)}
-                        className={`w-full rounded-lg px-3 py-2 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${isAdded(rec) ? "bg-slate-700 text-slate-300" : "bg-gradient-to-r from-indigo-500 to-teal-400 text-slate-900 hover:from-indigo-400 hover:to-teal-300 shadow-sm"}`}
-                      >
-                        {isAdded(rec) ? "Added" : "Add to Watchlist"}
-                      </button>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </section>
-          </main>
-
-          <aside className="space-y-6 lg:col-span-3">
-            <section className="rounded-2xl bg-slate-900/70 p-5 shadow-xl shadow-black/30 ring-1 ring-slate-800">
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div aria-hidden="true" className="h-10 w-10 rounded-full bg-gradient-to-br from-indigo-500 to-teal-400 text-slate-900 flex items-center justify-center font-bold">AL</div>
+            </div>
+            <ul className="space-y-3" aria-label="Recent activity">
+              {activity.slice(0,6).map(a=>(
+                <li key={a.id} className="text-sm flex items-start gap-2">
+                  <span className="mt-1 w-2 h-2 rounded-full bg-teal-500"></span>
                   <div>
-                    <p className="font-medium">Alex Lane</p>
-                    <p className="text-xs text-slate-400">Movie Enthusiast</p>
+                    <p>{a.text}</p>
+                    <span className="text-xs text-slate-400">{a.time}</span>
                   </div>
-                </div>
-                <span className="rounded-md bg-indigo-500/20 px-2 py-1 text-xs text-indigo-300 ring-1 ring-indigo-500/30">Pro</span>
-              </div>
-              <h3 className="mb-2 text-sm font-semibold text-slate-300">Recent activity</h3>
-              <ul className="space-y-3">
-                {activities.map(a => (
-                  <li key={a.id} className="flex items-start gap-3">
-                    <div className="mt-0.5 h-8 w-8 flex-shrink-0 rounded-full bg-slate-800 text-teal-300 ring-1 ring-slate-700 flex items-center justify-center text-xs font-bold">{a.user}</div>
-                    <div className="flex-1">
-                      <p className="text-sm text-slate-200"><span className="capitalize">{a.action}</span> <span className="text-teal-300">{a.title}</span></p>
-                      {a.rating ? <div className="mt-1 flex"><Rating value={a.rating} /></div> : null}
-                      <p className="text-xs text-slate-400">{a.text}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+          <section className="bg-slate-800/80 rounded-xl shadow-lg shadow-black/30 p-4">
+            <h3 className="text-lg font-semibold mb-3">Analytics</h3>
+            <div className="text-xs text-slate-400 mb-2">Watch distribution by genre</div>
+            <div className="space-y-2">
+              {stats.map(([g,count],idx)=>{
+                const total=stats.reduce((s,[,c])=>s+c,0);
+                const pct=Math.round((count/total)*100);
+                return (
+                  <div key={g}>
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="flex items-center gap-1">{genreIcon(g)}<span>{g}</span></span>
+                      <span className="text-slate-400">{pct}%</span>
                     </div>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <section className="rounded-2xl bg-slate-900/70 p-5 shadow-xl shadow-black/30 ring-1 ring-slate-800">
-              <h3 className="mb-4 text-sm font-semibold text-slate-300">Analytics</h3>
-              <div className="grid grid-cols-5 items-end gap-2" aria-label="Mini watch analytics">
-                {[60, 40, 80, 45, 70].map((h, i) => (
-                  <div key={i} className="group flex flex-col items-center gap-1">
-                    <div className="w-full rounded-md bg-gradient-to-t from-slate-800 to-slate-700 p-0.5 ring-1 ring-slate-700">
-                      <div className="h-24 w-full rounded bg-gradient-to-t from-indigo-500 to-teal-400" style={{height: `${h}%`}} />
+                    <div className="w-full h-2 rounded-full bg-slate-700 overflow-hidden">
+                      <div className={`h-full ${idx%2===0?'bg-indigo-500':'bg-teal-500'}`} style={{width:`${pct}%`}}></div>
                     </div>
-                    <span className="text-[10px] text-slate-400">W{i+1}</span>
                   </div>
-                ))}
-              </div>
-              <div className="mt-4 rounded-lg bg-slate-800/80 p-3">
-                <svg viewBox="0 0 200 60" className="h-24 w-full">
-                  <polyline points="0,50 30,40 60,42 90,25 120,28 150,15 180,20 200,10" fill="none" stroke="url(#g)" strokeWidth="3" />
-                  <defs>
-                    <linearGradient id="g" x1="0" x2="1">
-                      <stop offset="0%" stopColor="#818cf8" />
-                      <stop offset="100%" stopColor="#2dd4bf" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-                <p className="text-xs text-slate-400">Weekly watch trend</p>
-              </div>
-            </section>
-          </aside>
-        </div>
+                );
+              })}
+            </div>
+            <svg viewBox="0 0 200 60" className="w-full mt-4 rounded-lg bg-slate-900/40 border border-slate-700">
+              <polyline fill="none" stroke="#34d399" strokeWidth="2" points="0,40 20,30 40,32 60,20 80,25 100,18 120,22 140,15 160,18 180,12 200,10"/>
+              <polyline fill="none" stroke="#6366f1" strokeWidth="2" points="0,48 20,45 40,44 60,38 80,40 100,36 120,35 140,30 160,28 180,25 200,22"/>
+            </svg>
+          </section>
+        </aside>
       </div>
-
-      <div aria-live="polite" className="sr-only">{announce}</div>
+      <footer className="px-4 pb-6 max-w-7xl mx-auto text-center text-xs text-slate-500">© {new Date().getFullYear()} MyCinema</footer>
     </div>
   );
 }
