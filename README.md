@@ -20,7 +20,7 @@ python main.py
 # or run with uvicorn directly:
 .\.venv\Scripts\python.exe -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 ```
-
+(Requires pydantic[email] if not already installed through requirements)
 
 ## What this repo contains
 - `main.py` — FastAPI app backed by SQLAlchemy and a local SQLite DB (`artifacts/onboarding.db`).
