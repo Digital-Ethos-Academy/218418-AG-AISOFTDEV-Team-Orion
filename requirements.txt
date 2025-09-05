@@ -1,0 +1,64 @@
+# Project dependencies for running all notebooks and Python scripts
+# Grouped by purpose; pin versions for core runtime libraries
+
+# Web frameworks and API
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+flask
+
+# Testing
+pytest
+
+# Environment helpers
+python-dotenv
+
+# Web UI
+streamlit
+
+# Agent frameworks / tooling
+autogen
+pyautogen
+smolagents
+#langchain
+#langchain-core
+#langchain-community
+#langchain-openai
+langgraph
+a2a-protocol
+mcp
+langchain-mcp
+
+# RAG / Vector stores / Document loaders
+faiss-cpu
+pypdf
+sentence-transformers
+
+# Model infra & huggingface
+transformers
+huggingface_hub
+accelerate
+datasets
+torch
+torchvision
+torchaudio
+
+# Model providers & tokenization
+openai
+tiktoken
+anthropic
+google-generativeai
+
+# Utilities and data
+requests
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+plantuml
+
+# Misc (community / integrations)
+tavily-python
+weaviate-client
