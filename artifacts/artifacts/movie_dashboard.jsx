@@ -101,3 +101,4 @@ export default function MyCinemaDashboard() {
     </div>
   );
 }
+window.MyCinemaDashboard = MyCinemaDashboard;
